@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Play, Pause, Volume2, VolumeX, Move } from 'lucide-react';
 
@@ -12,23 +11,42 @@ const MusicPlayer = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
 
-  // Ambient music tracks
+  // Ambient music tracks (add your actual mp3 paths in public folder)
   const tracks = [
-    { name: 'Coding Flow', duration: '3:24' },
-    { name: 'Digital Dreams', duration: '4:12' },
-    { name: 'Syntax Symphony', duration: '2:45' }
+    { name: 'Coding Flow', duration: '3:24', url: '/music/coding-flow.mp3' },
+    { name: 'Digital Dreams', duration: '4:12', url: '/music/digital-dreams.mp3' },
+    { name: 'Syntax Symphony', duration: '2:45', url: '/music/syntax-symphony.mp3' },
   ];
 
+  // Update audio source when track changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.src = tracks[currentTrack].url;
+      if (isPlaying) {
+        audioRef.current.play().catch(err => console.error('Play error:', err));
+      }
+    }
+  }, [currentTrack]);
+
+  // Play / Pause logic
   useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
-        console.log(`Playing: ${tracks[currentTrack].name}`);
+        audioRef.current.play().catch(err => console.error('Play error:', err));
       } else {
-        console.log('Music paused');
+        audioRef.current.pause();
       }
     }
-  }, [isPlaying, currentTrack, tracks]);
+  }, [isPlaying]);
 
+  // Mute / Unmute logic
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
+
+  // Drag and drop logic
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (playerRef.current) {
       const rect = playerRef.current.getBoundingClientRect();
@@ -63,27 +81,26 @@ const MusicPlayer = () => {
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
+  // Button handlers
   const togglePlay = useCallback(() => {
-    setIsPlaying(!isPlaying);
-  }, [isPlaying]);
+    setIsPlaying(prev => !prev);
+  }, []);
 
   const toggleMute = useCallback(() => {
-    setIsMuted(!isMuted);
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-    }
-  }, [isMuted]);
+    setIsMuted(prev => !prev);
+  }, []);
 
   const nextTrack = useCallback(() => {
     setCurrentTrack((prev) => (prev + 1) % tracks.length);
+    setIsPlaying(true); // auto-play next track
   }, [tracks.length]);
 
   return (
-    <div 
+    <div
       ref={playerRef}
       className="fixed z-50 glass-card rounded-xl border border-white/20 hover:border-neon-purple/50 transition-all duration-300 cursor-move"
-      style={{ 
-        left: `${position.x}px`, 
+      style={{
+        left: `${position.x}px`,
         top: `${position.y}px`,
         userSelect: 'none'
       }}
@@ -91,7 +108,7 @@ const MusicPlayer = () => {
     >
       <div className="flex items-center gap-3 p-4">
         <Move className="w-4 h-4 text-gray-400 opacity-50" />
-        
+
         <button
           onClick={togglePlay}
           className="w-10 h-10 bg-gradient-neon rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
@@ -103,7 +120,7 @@ const MusicPlayer = () => {
             <Play className="w-5 h-5 text-white ml-0.5" />
           )}
         </button>
-        
+
         <div className="hidden sm:block">
           <p className="text-sm font-medium text-white">
             {tracks[currentTrack].name}
@@ -112,7 +129,7 @@ const MusicPlayer = () => {
             {tracks[currentTrack].duration}
           </p>
         </div>
-        
+
         <button
           onClick={toggleMute}
           className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors duration-300"
@@ -124,7 +141,7 @@ const MusicPlayer = () => {
             <Volume2 className="w-4 h-4 text-white" />
           )}
         </button>
-        
+
         <button
           onClick={nextTrack}
           className="hidden sm:block text-xs text-gray-400 hover:text-white transition-colors duration-300"
@@ -132,21 +149,22 @@ const MusicPlayer = () => {
           Next
         </button>
       </div>
-      
-      {/* Progress bar */}
+
+      {/* Progress bar (just for visual now) */}
       {isPlaying && (
         <div className="px-4 pb-2">
           <div className="w-full bg-gray-700 rounded-full h-1">
-            <div 
+            <div
               className="bg-gradient-neon h-1 rounded-full animate-pulse"
               style={{ width: '45%' }}
             ></div>
           </div>
         </div>
       )}
-      
-      <audio ref={audioRef} loop>
-        {/* <source src="/music/ambient-coding.mp3" type="audio/mpeg" /> */}
+
+      <audio ref={audioRef}>
+        <source src={tracks[currentTrack].url} type="audio/mpeg" />
+        Your browser does not support the audio element.
       </audio>
     </div>
   );

@@ -145,6 +145,7 @@ const InteractiveGame = () => {
             className="p-2 hover:bg-white/10 rounded-lg transition-colors duration-300"
           >
             <X className="w-5 h-5" />
+            <span className="sr-only">Close</span>
           </button>
         </div>
 
@@ -193,6 +194,7 @@ const InteractiveGame = () => {
                     }}
                   >
                     <IconComponent className="w-full h-full animate-pulse" />
+                    <span className="sr-only">Close</span>
                   </button>
                 );
               })}
