@@ -11,7 +11,7 @@ const Footer = () => {
             <span className="neon-glow font-medium">Harsh Raj</span>
           </p>
           <p className="text-gray-500 text-sm mt-2">
-            Crafted with React, TypeScript & Tailwind CSS
+            Crafted with React & Tailwind CSS
           </p>
         </div>
       </div>
