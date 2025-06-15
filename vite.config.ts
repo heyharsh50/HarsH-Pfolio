@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-   base: "/HarsH-Pfolio",
+   base: "/HarsH-Pfolio/",
   plugins: [
     react(),
     mode === 'development' &&
