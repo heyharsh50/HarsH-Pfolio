@@ -3,7 +3,8 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
 
-createRoot(document.getElementById("root")!).render(<App />);
- <BrowserRouter basename="/HarsH-Pfolio">
+createRoot(document.getElementById("root")!).render(
+  <BrowserRouter basename="/HarsH-Pfolio">
     <App />
   </BrowserRouter>
+);
