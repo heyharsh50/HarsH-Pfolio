@@ -1,25 +1,27 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { X, Zap, Star, Code, Move } from 'lucide-react';
+
+type IconType = typeof Code;
 
 const InteractiveGame = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameActive, setGameActive] = useState(false);
-  const [targets, setTargets] = useState<Array<{id: number, x: number, y: number, icon: any}>>([]);
-  const [position, setPosition] = useState({ x: window.innerWidth - 80, y: 80 });
+  const [targets, setTargets] = useState<Array<{ id: number; x: number; y: number; icon: IconType }>>([]);
+  const [position, setPosition] = useState({ x: 300, y: 100 }); // safer default
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const icons = [Code, Zap, Star];
+  const icons: IconType[] = [Code, Zap, Star];
 
+  // Countdown timer logic
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (gameActive && timeLeft > 0) {
       interval = setInterval(() => {
-        setTimeLeft(time => time - 1);
+        setTimeLeft(prev => prev - 1);
       }, 1000);
     } else if (timeLeft === 0) {
       setGameActive(false);
@@ -28,6 +30,7 @@ const InteractiveGame = () => {
     return () => clearInterval(interval);
   }, [gameActive, timeLeft]);
 
+  // Target spawning logic
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (gameActive) {
@@ -36,14 +39,15 @@ const InteractiveGame = () => {
           id: Math.random(),
           x: Math.random() * 80 + 10,
           y: Math.random() * 60 + 20,
-          icon: icons[Math.floor(Math.random() * icons.length)]
+          icon: icons[Math.floor(Math.random() * icons.length)],
         };
         setTargets(prev => [...prev.slice(-4), newTarget]);
       }, 1500);
     }
     return () => clearInterval(interval);
-  }, [gameActive, icons]);
+  }, [gameActive]);
 
+  // Dragging functionality
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     if (buttonRef.current) {
@@ -83,7 +87,14 @@ const InteractiveGame = () => {
     setScore(0);
     setTimeLeft(30);
     setGameActive(true);
-    setTargets([]);
+    // spawn one immediately
+    const firstTarget = {
+      id: Math.random(),
+      x: Math.random() * 80 + 10,
+      y: Math.random() * 60 + 20,
+      icon: icons[Math.floor(Math.random() * icons.length)],
+    };
+    setTargets([firstTarget]);
   }, []);
 
   const hitTarget = useCallback((id: number) => {
@@ -111,10 +122,10 @@ const InteractiveGame = () => {
         onClick={handleButtonClick}
         onMouseDown={handleMouseDown}
         className="fixed z-40 glass-card p-3 rounded-full hover:scale-110 transition-transform duration-300 cursor-move"
-        style={{ 
-          left: `${position.x}px`, 
+        style={{
+          left: `${position.x}px`,
           top: `${position.y}px`,
-          userSelect: 'none'
+          userSelect: 'none',
         }}
         aria-label="Open mini game"
       >
@@ -152,20 +163,17 @@ const InteractiveGame = () => {
                 Final Score: <span className="neon-glow font-bold">{score}</span>
               </p>
             )}
-            <button
-              onClick={startGame}
-              className="btn-neon"
-            >
+            <button onClick={startGame} className="btn-neon">
               {score > 0 ? 'Play Again' : 'Start Game'}
             </button>
           </div>
         ) : (
           <div>
-            <div className="flex justify-between mb-4">
-              <div className="text-sm">
+            <div className="flex justify-between mb-4 text-sm">
+              <div>
                 Score: <span className="neon-glow font-bold">{score}</span>
               </div>
-              <div className="text-sm">
+              <div>
                 Time: <span className="text-red-400 font-bold">{timeLeft}s</span>
               </div>
             </div>
@@ -181,7 +189,7 @@ const InteractiveGame = () => {
                     style={{
                       left: `${target.x}%`,
                       top: `${target.y}%`,
-                      transform: 'translate(-50%, -50%)'
+                      transform: 'translate(-50%, -50%)',
                     }}
                   >
                     <IconComponent className="w-full h-full animate-pulse" />
