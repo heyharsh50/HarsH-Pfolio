@@ -13,9 +13,12 @@ const MusicPlayer = () => {
 
   // Ambient music tracks (add your actual mp3 paths in public folder)
   const tracks = [
-    { name: 'Coding Flow', duration: '3:24', url: '/music/coding-flow.mp3' },
-    { name: 'Digital Dreams', duration: '4:12', url: '/music/digital-dreams.mp3' },
-    { name: 'Syntax Symphony', duration: '2:45', url: '/music/syntax-symphony.mp3' },
+    { name: 'Blue', duration: '3:24', url: '/music/Blue-Yung-Kai.mp3' },
+    { name: 'Die With A Smile', duration: '4:12', url: '/music/Die With A Smile.mp3' },
+    { name: 'novamare', duration: '2:45', url: '/music/novamare.mp3' },
+    { name: 'PASSO BEM SOLTO', duration: '2:45', url: '/music/PASSO BEM SOLTO.mp3' },
+    { name: 'Popular-The Weeknd', duration: '2:45', url: '/music/Popular.mp3' },
+    { name: 'Starboy-The Weeknd', duration: '2:45', url: '/music/Starboy.mp3' },
   ];
 
   // Update audio source when track changes
