@@ -22,7 +22,7 @@ const Hero = () => {
             Frontend Developer crafting clean web experiences with modern technologies
           </p>
           <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
-            Passionate about creating responsive, user-friendly applications using React, TypeScript, and cutting-edge web technologies
+            Passionate about creating responsive, user-friendly applications using React + Vite cutting-edge web technologies
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
