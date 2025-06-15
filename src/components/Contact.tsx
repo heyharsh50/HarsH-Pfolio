@@ -42,20 +42,20 @@ const Contact = () => {
     {
       icon: <Mail className="w-5 h-5" />,
       label: 'Email',
-      value: 'harsh.raj.dev@gmail.com',
-      href: 'mailto:harsh.raj.dev@gmail.com'
+      value: 'harshraj88253@gmail.com',
+      href: 'mailto:harshraj88253@gmail.com'
     },
     {
       icon: <Linkedin className="w-5 h-5" />,
       label: 'LinkedIn',
       value: '/in/harsh-raj-dev',
-      href: 'https://linkedin.com/in/harsh-raj-dev'
+      href: 'https://www.linkedin.com/in/hraj129/'
     },
     {
       icon: <Github className="w-5 h-5" />,
       label: 'GitHub',
       value: '/harsh-raj-dev',
-      href: 'https://github.com/harsh-raj-dev'
+      href: 'https://github.com/heyharsh50'
     },
     {
       icon: <MapPin className="w-5 h-5" />,
@@ -182,7 +182,7 @@ const Contact = () => {
               </p>
               <div className="flex gap-4 justify-center">
                 <a 
-                  href="https://linkedin.com/in/harsh-raj-dev"
+                  href="https://www.linkedin.com/in/hraj129/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-3 bg-gradient-neon rounded-lg hover:scale-110 transition-transform duration-300"
@@ -190,7 +190,7 @@ const Contact = () => {
                   <Linkedin className="w-6 h-6 text-white" />
                 </a>
                 <a 
-                  href="https://github.com/harsh-raj-dev"
+                  href="https://github.com/heyharsh50"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-3 bg-gradient-neon rounded-lg hover:scale-110 transition-transform duration-300"
@@ -198,7 +198,7 @@ const Contact = () => {
                   <Github className="w-6 h-6 text-white" />
                 </a>
                 <a 
-                  href="mailto:harsh.raj.dev@gmail.com"
+                  href="mailto:harshraj88253@gmail.com"
                   className="p-3 bg-gradient-neon rounded-lg hover:scale-110 transition-transform duration-300"
                 >
                   <Mail className="w-6 h-6 text-white" />
