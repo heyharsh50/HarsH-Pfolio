@@ -1,5 +1,7 @@
 
 import { Download, ExternalLink } from 'lucide-react';
+import Resume from '../assets/Harsh_Raj_Resume.pdf';
+
 
 const Hero = () => {
   return (
@@ -31,7 +33,7 @@ const Hero = () => {
               View Projects
             </a>
             <a 
-              href="/resume.pdf" 
+              href={Resume}
               target="_blank"
               className="glass-card px-6 py-3 rounded-lg border border-white/20 hover:border-neon-purple/50 transition-all duration-300 hover:scale-105 flex items-center gap-2"
             >
