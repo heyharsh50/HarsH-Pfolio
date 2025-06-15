@@ -30,9 +30,8 @@ const Resume = () => {
         { name: 'HTML5', level: 'Expert', icon: '🌐' },
         { name: 'CSS3 & SCSS', level: 'Advanced', icon: '🎨' },
         { name: 'JavaScript (ES6+)', level: 'Advanced', icon: '⚡' },
-        { name: 'TypeScript', level: 'Intermediate', icon: '📘' },
+        { name: 'C++', level: 'Intermediate', icon: '👨‍💻' },
         { name: 'React.js', level: 'Advanced', icon: '⚛️' },
-        { name: 'Next.js', level: 'Intermediate', icon: '🔺' }
       ]
     },
     {
