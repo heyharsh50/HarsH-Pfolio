@@ -17,26 +17,37 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Create Google Forms URL with pre-filled data
-    const formUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
-    const params = new URLSearchParams({
-      'entry.NAME_FIELD': formData.name,
-      'entry.EMAIL_FIELD': formData.email,
-      'entry.MESSAGE_FIELD': formData.message
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const accessKey = 'aa61102b-603c-44ba-8b76-9ed4e1ffb2c3';
+
+  try {
+    await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        access_key: accessKey,
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        redirect: false
+      })
     });
 
-    // For now, we'll just show a success message
-    toast.success('Message sent successfully! I\'ll get back to you soon.');
-    
-    // Reset form
+    toast.success("Message sent successfully! I'll get back to you soon.");
     setFormData({ name: '', email: '', message: '' });
-    
-    // In a real implementation, you would submit to Google Forms:
-    // window.open(`${formUrl}?${params.toString()}`, '_blank');
-  };
+  } catch (error) {
+    console.error("Submission error:", error);
+    toast.error("Oops! Something went wrong. Please try again.");
+  }
+};
+
+
+
 
   const contactInfo = [
     {
