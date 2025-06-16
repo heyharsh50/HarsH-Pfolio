@@ -1,9 +1,13 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, Music } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
-const Navbar = () => {
+interface NavbarProps {
+  onToggleMusicPlayer: () => void;
+}
+
+const Navbar = ({ onToggleMusicPlayer }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     // Check localStorage first, default to dark mode
@@ -26,7 +30,6 @@ const Navbar = () => {
     
     if (darkMode) {
       document.documentElement.classList.add('dark');
-      document.body.style.background = '';
     } else {
       document.documentElement.classList.remove('dark');
     }
@@ -70,7 +73,11 @@ const Navbar = () => {
           </div>
 
           {/* Theme Toggle */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-4">
+            <button onClick={onToggleMusicPlayer} className="text-gray-400 hover:text-white" aria-label="Toggle Music Player">
+              <Music size={20} />
+            </button>
+            <div className="w-px h-6 bg-gray-700"></div>
             <Sun className={`w-4 h-4 ${!darkMode ? 'text-yellow-500' : 'text-gray-400'}`} />
             <Switch
               checked={darkMode}
@@ -106,6 +113,12 @@ const Navbar = () => {
                 {item.name}
               </a>
             ))}
+                        <div className="flex items-center justify-between px-3 py-2">
+              <span className="nav-link">Music</span>
+              <button onClick={() => { onToggleMusicPlayer(); setIsOpen(false); }} className="text-gray-400 hover:text-white" aria-label="Toggle Music Player">
+                <Music size={20} />
+              </button>
+            </div>
             <div className="flex items-center justify-between px-3 py-2">
               <span className="nav-link">Theme</span>
               <div className="flex items-center gap-2">
