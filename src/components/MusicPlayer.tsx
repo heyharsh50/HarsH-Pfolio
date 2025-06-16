@@ -1,175 +1,182 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Play, Pause, Volume2, VolumeX, Move } from 'lucide-react';
+import Draggable from 'react-draggable';
+import { Play, Pause, FastForward, Rewind, Volume2, VolumeX, Minimize2, Maximize2, Move, X } from 'lucide-react';
 
-const MusicPlayer = () => {
+interface MusicPlayerProps {
+  isVisible: boolean;
+  onClose: () => void;
+}
+
+const MusicPlayer = ({ isVisible, onClose }: MusicPlayerProps) => {
+    
+  const [isMinimized, setIsMinimized] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
-  const [position, setPosition] = useState({ x: 16, y: window.innerHeight - 120 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const playerRef = useRef<HTMLDivElement>(null);
 
-  // Ambient music tracks (add your actual mp3 paths in public folder)
   const tracks = [
-    { name: 'Blue', duration: '3:24', url: '/music/Blue-Yung-Kai.mp3' },
-    { name: 'Die With A Smile', duration: '4:12', url: '/music/Die With A Smile.mp3' },
-    { name: 'novamare', duration: '2:45', url: '/music/novamare.mp3' },
-    { name: 'PASSO BEM SOLTO', duration: '2:45', url: '/music/PASSO BEM SOLTO.mp3' },
-    { name: 'Popular-The Weeknd', duration: '2:45', url: '/music/Popular.mp3' },
-    { name: 'Starboy-The Weeknd', duration: '2:45', url: '/music/Starboy.mp3' },
+    { name: 'Blue', artist: 'Yung Kai', url: `${import.meta.env.BASE_URL}music/Blue-Yung-Kai.mp3`, art: `${import.meta.env.BASE_URL}images/music-art.jpg` },
+    { name: 'Die With A Smile', artist: 'Lady Gaga', url: `${import.meta.env.BASE_URL}music/Die With A Smile.mp3`, art: `${import.meta.env.BASE_URL}images/music-art.jpg` },
+    { name: 'novamare', artist: 'novamare', url: `${import.meta.env.BASE_URL}music/novamare.mp3`, art: `${import.meta.env.BASE_URL}images/music-art.jpg` },
+    { name: 'PASSO BEM SOLTO', artist: 'PASSO BEM SOLTO', url: `${import.meta.env.BASE_URL}music/PASSO BEM SOLTO.mp3`, art: `${import.meta.env.BASE_URL}images/music-art.jpg` },
+    { name: 'Popular', artist: 'The Weeknd', url: `${import.meta.env.BASE_URL}music/Popular.mp3`, art: `${import.meta.env.BASE_URL}images/music-art.jpg` },
+    { name: 'Starboy', artist: 'The Weeknd', url: `${import.meta.env.BASE_URL}music/Starboy.mp3`, art: `${import.meta.env.BASE_URL}images/music-art.jpg` },
   ];
 
-  // Update audio source when track changes
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.src = tracks[currentTrack].url;
-      if (isPlaying) {
-        audioRef.current.play().catch(err => console.error('Play error:', err));
-      }
+      audioRef.current.load();
     }
   }, [currentTrack]);
 
-  // Play / Pause logic
   useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play().catch(err => console.error('Play error:', err));
-      } else {
-        audioRef.current.pause();
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.error("Playback failed:", err);
+          setIsPlaying(false);
+        });
       }
+    } else {
+      audioRef.current.pause();
     }
   }, [isPlaying]);
 
-  // Mute / Unmute logic
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.muted = isMuted;
     }
   }, [isMuted]);
 
-  // Drag and drop logic
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (playerRef.current) {
-      const rect = playerRef.current.getBoundingClientRect();
-      setDragOffset({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-      setIsDragging(true);
+  const onLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
     }
-  }, []);
+  };
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDragging) {
-      const newX = Math.max(0, Math.min(window.innerWidth - 200, e.clientX - dragOffset.x));
-      const newY = Math.max(0, Math.min(window.innerHeight - 100, e.clientY - dragOffset.y));
-      setPosition({ x: newX, y: newY });
+  const onTimeUpdate = () => {
+    if (audioRef.current) {
+      setProgress(audioRef.current.currentTime);
     }
-  }, [isDragging, dragOffset]);
+  };
 
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
+  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = Number(e.target.value);
     }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  };
 
-  // Button handlers
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return '0:00';
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
   const togglePlay = useCallback(() => {
     setIsPlaying(prev => !prev);
   }, []);
 
-  const toggleMute = useCallback(() => {
-    setIsMuted(prev => !prev);
-  }, []);
+  const toggleMute = useCallback(() => setIsMuted(prev => !prev), []);
 
   const nextTrack = useCallback(() => {
-    setCurrentTrack((prev) => (prev + 1) % tracks.length);
-    setIsPlaying(true); // auto-play next track
+    setCurrentTrack(prev => (prev + 1) % tracks.length);
   }, [tracks.length]);
 
-  return (
-    <div
-      ref={playerRef}
-      className="fixed z-50 glass-card rounded-xl border border-white/20 hover:border-neon-purple/50 transition-all duration-300 cursor-move"
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        userSelect: 'none'
-      }}
-      onMouseDown={handleMouseDown}
-    >
-      <div className="flex items-center gap-3 p-4">
-        <Move className="w-4 h-4 text-gray-400 opacity-50" />
+    const prevTrack = useCallback(() => {
+    setCurrentTrack(prev => (prev - 1 + tracks.length) % tracks.length);
+  }, [tracks.length]);
 
-        <button
-          onClick={togglePlay}
-          className="w-10 h-10 bg-gradient-neon rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
-          aria-label={isPlaying ? 'Pause music' : 'Play music'}
-        >
-          {isPlaying ? (
-            <Pause className="w-5 h-5 text-white" />
-          ) : (
-            <Play className="w-5 h-5 text-white ml-0.5" />
-          )}
-        </button>
+  
 
-        <div className="hidden sm:block">
-          <p className="text-sm font-medium text-white">
-            {tracks[currentTrack].name}
-          </p>
-          <p className="text-xs text-gray-400">
-            {tracks[currentTrack].duration}
-          </p>
+      if (!isVisible) return null;
+
+  if (isMinimized) {
+    return (
+      <Draggable>
+        <div className="fixed bottom-4 right-4 z-50">
+          <button 
+            onClick={() => setIsMinimized(false)} 
+            className="bg-gray-800/50 text-white p-3 rounded-full shadow-lg backdrop-blur-md hover:bg-gray-700/70 transition-colors"
+            aria-label="Maximize music player"
+          >
+            <Maximize2 size={24} />
+          </button>
         </div>
+      </Draggable>
+    );
+  }
 
-        <button
-          onClick={toggleMute}
-          className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors duration-300"
-          aria-label={isMuted ? 'Unmute' : 'Mute'}
-        >
-          {isMuted ? (
-            <VolumeX className="w-4 h-4 text-gray-400" />
-          ) : (
-            <Volume2 className="w-4 h-4 text-white" />
-          )}
-        </button>
-
-        <button
-          onClick={nextTrack}
-          className="hidden sm:block text-xs text-gray-400 hover:text-white transition-colors duration-300"
-        >
-          Next
-        </button>
-      </div>
-
-      {/* Progress bar (just for visual now) */}
-      {isPlaying && (
-        <div className="px-4 pb-2">
-          <div className="w-full bg-gray-700 rounded-full h-1">
-            <div
-              className="bg-gradient-neon h-1 rounded-full animate-pulse"
-              style={{ width: '45%' }}
-            ></div>
+  return (
+    <Draggable handle=".handle">
+      <div className="fixed bottom-4 right-4 z-50 w-80 max-w-sm rounded-xl shadow-2xl overflow-hidden bg-gray-900/50 backdrop-blur-md border border-gray-700/50">
+                <div className="handle p-2 bg-gray-800/60 flex justify-between items-center cursor-move">
+          <Move className="text-gray-400" />
+          <h3 className="text-md font-bold text-white">Ambient Music</h3>
+          <div className="flex items-center">
+            <button onClick={() => setIsMinimized(true)} className="text-gray-400 hover:text-white" aria-label="Minimize music player">
+              <Minimize2 size={20} />
+            </button>
+            <button onClick={onClose} className="text-gray-400 hover:text-white ml-2" aria-label="Close music player">
+                <X size={20} />
+            </button>
           </div>
         </div>
-      )}
+        
+        <div className="p-4">
+            <div className="flex items-center gap-4">
+                <img src={tracks[currentTrack].art} alt="Album art" className="w-16 h-16 rounded-lg shadow-md object-cover" />
+                <div>
+                    <h4 className="font-bold text-white text-lg truncate">{tracks[currentTrack].name}</h4>
+                    <p className="text-gray-400 text-sm">{tracks[currentTrack].artist}</p>
+                </div>
+            </div>
 
-      <audio ref={audioRef}>
-        <source src={tracks[currentTrack].url} type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
-    </div>
+            <div className="mt-4">
+                <input
+                    type="range"
+                    value={progress}
+                    step="any"
+                    max={duration || 0}
+                    onChange={handleProgressChange}
+                    className="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer range-sm"
+                />
+                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>{formatTime(progress)}</span>
+                    <span>{formatTime(duration)}</span>
+                </div>
+            </div>
+
+            <div className="flex justify-between items-center mt-4">
+                <button onClick={toggleMute} className="text-gray-400 hover:text-white p-2">
+                    {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                </button>
+                <div className="flex items-center gap-4">
+                    <button onClick={prevTrack} className="text-gray-400 hover:text-white p-2"><Rewind size={24} /></button>
+                    <button onClick={togglePlay} className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300">
+                        {isPlaying ? <Pause size={28} /> : <Play size={28} />}
+                    </button>
+                    <button onClick={nextTrack} className="text-gray-400 hover:text-white p-2"><FastForward size={24} /></button>
+                </div>
+                <div className="w-9 h-9" /> 
+            </div>
+        </div>
+
+        <audio 
+          ref={audioRef} 
+          onEnded={nextTrack} 
+          onTimeUpdate={onTimeUpdate}
+          onLoadedMetadata={onLoadedMetadata}
+        />
+      </div>
+    </Draggable>
   );
 };
 
