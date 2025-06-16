@@ -1,28 +1,32 @@
 
+import { useState, Suspense, lazy } from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import About from '../components/About';
-import Projects from '../components/Projects';
-import Resume from '../components/Resume';
-import Contact from '../components/Contact';
-import Footer from '../components/Footer';
+const About = lazy(() => import('../components/About'));
+const Projects = lazy(() => import('../components/Projects'));
+const Resume = lazy(() => import('../components/Resume'));
+const Contact = lazy(() => import('../components/Contact'));
+const Footer = lazy(() => import('../components/Footer'));
 import ScrollToTop from '../components/ScrollToTop';
 import MusicPlayer from '../components/MusicPlayer';
 import InteractiveGame from '../components/InteractiveGame';
 import { Toaster } from 'sonner';
 
 const Index = () => {
+  const [isMusicPlayerVisible, setIsMusicPlayerVisible] = useState(true);
   return (
     <div className="min-h-screen bg-gradient-dark text-white">
-      <Navbar />
+      <Navbar onToggleMusicPlayer={() => setIsMusicPlayerVisible(prev => !prev)} />
       <Hero />
-      <About />
-      <Projects />
-      <Resume />
-      <Contact />
-      <Footer />
+            <Suspense fallback={<div>Loading...</div>}>
+        <About />
+        <Projects />
+        <Resume />
+        <Contact />
+        <Footer />
+      </Suspense>
       <ScrollToTop />
-      <MusicPlayer />
+      <MusicPlayer isVisible={isMusicPlayerVisible} onClose={() => setIsMusicPlayerVisible(false)} />
       <InteractiveGame />
       <Toaster 
         theme="dark"
