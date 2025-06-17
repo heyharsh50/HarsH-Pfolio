@@ -1,24 +1,25 @@
 
 import { Download, Eye, Calendar, Award, Code, CheckCircle, Star } from 'lucide-react';
+import resume from '../assets/Harsh_Raj_Resume.pdf';
 
 const Resume = () => {
   const timeline = [
     {
-      year: '2024',
-      title: 'Started Web Development Journey',
-      description: 'Began learning modern web technologies including React, TypeScript, and Tailwind CSS',
+      year: '2025',
+      title: 'Completed B.Tech in Computer Science',
+      description: 'Graduated from Sikkim Manipal Institute of Technology with a degree in Computer Science & Engineering',
       icon: <Code className="w-5 h-5" />
     },
     {
       year: '2024',
-      title: 'Frontend Development Certification',
-      description: 'Completed comprehensive frontend development course with focus on React ecosystem',
+      title: 'Web Development Internship at Find Flames',
+      description: 'Built responsive web apps using React.js and Firebase; collaborated with teams using Jira',
       icon: <Award className="w-5 h-5" />
     },
     {
       year: '2024',
-      title: 'First Portfolio Projects',
-      description: 'Built several portfolio projects showcasing modern web development skills',
+      title: 'Frontend Developer at Platinum Software Pvt Ltd',
+      description: 'Worked on MERN stack projects, designed UI with Figma, and contributed to full-stack development',
       icon: <Calendar className="w-5 h-5" />
     }
   ];
@@ -97,7 +98,7 @@ const Resume = () => {
             
             <div className="space-y-4">
               <a 
-                href="/resume.pdf" 
+                href={resume}
                 download
                 className="btn-neon w-full flex items-center justify-center gap-2"
               >
@@ -105,7 +106,7 @@ const Resume = () => {
                 Download PDF Resume
               </a>
               <a 
-                href="/resume.pdf" 
+                href={resume} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="glass-card w-full px-6 py-3 rounded-lg border border-white/20 hover:border-neon-purple/50 transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
