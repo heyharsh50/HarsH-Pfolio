@@ -29,24 +29,32 @@ const MusicPlayer = ({ isVisible, onClose }: MusicPlayerProps) => {
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.src = tracks[currentTrack].url;
-      audioRef.current.load();
+      if (isPlaying) {
+        audioRef.current.play().catch(() => setIsPlaying(false));
+      }
     }
   }, [currentTrack]);
 
   useEffect(() => {
-    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
 
     if (isPlaying) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(err => {
-          console.error("Playback failed:", err);
-          setIsPlaying(false);
-        });
-      }
+      audio.play().catch(() => setIsPlaying(false));
     } else {
-      audioRef.current.pause();
+      audio.pause();
     }
+
+    return () => {
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+    };
   }, [isPlaying]);
 
   useEffect(() => {
@@ -87,12 +95,32 @@ const MusicPlayer = ({ isVisible, onClose }: MusicPlayerProps) => {
   const toggleMute = useCallback(() => setIsMuted(prev => !prev), []);
 
   const nextTrack = useCallback(() => {
-    setCurrentTrack(prev => (prev + 1) % tracks.length);
-  }, [tracks.length]);
+    setIsPlaying(false); // Stop playback before changing track
+    setCurrentTrack(prev => {
+      const next = (prev + 1) % tracks.length;
+      if (audioRef.current) {
+        audioRef.current.src = tracks[next].url;
+        audioRef.current.load();
+      }
+      // Delay playing the next track slightly to allow it to load
+      setTimeout(() => setIsPlaying(true), 150);
+      return next;
+    });
+  }, [tracks]);
 
-    const prevTrack = useCallback(() => {
-    setCurrentTrack(prev => (prev - 1 + tracks.length) % tracks.length);
-  }, [tracks.length]);
+  const prevTrack = useCallback(() => {
+    setIsPlaying(false); // Stop playback before changing track
+    setCurrentTrack(prev => {
+      const next = (prev - 1 + tracks.length) % tracks.length;
+      if (audioRef.current) {
+        audioRef.current.src = tracks[next].url;
+        audioRef.current.load();
+      }
+      // Delay playing the next track slightly to allow it to load
+      setTimeout(() => setIsPlaying(true), 150);
+      return next;
+    });
+  }, [tracks]);
 
   
 
