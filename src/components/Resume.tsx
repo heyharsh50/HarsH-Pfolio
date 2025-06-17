@@ -8,20 +8,20 @@ const Resume = () => {
       year: '2025',
       title: 'Completed B.Tech in Computer Science',
       description: 'Graduated from Sikkim Manipal Institute of Technology with a degree in Computer Science & Engineering',
-      icon: <Code className="w-5 h-5" />
+      icon: <Award className="w-5 h-5" />
     },
     {
       year: '2024',
       title: 'Web Development Internship at Find Flames',
       description: 'Built responsive web apps using React.js and Firebase; collaborated with teams using Jira',
-      icon: <Award className="w-5 h-5" />
+      icon: <Code className="w-5 h-5" />
     },
     {
-      year: '2024',
+      year: '2025',
       title: 'Frontend Developer at Platinum Software Pvt Ltd',
       description: 'Worked on MERN stack projects, designed UI with Figma, and contributed to full-stack development',
-      icon: <Calendar className="w-5 h-5" />
-    }
+      icon: <Code className="w-5 h-5" />
+    } 
   ];
 
   const technicalSkills = [
