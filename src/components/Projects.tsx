@@ -1,43 +1,45 @@
-
+import Ecart from '../assets/E-CART.png';
+import Pfolio from '../assets/Portfolio.png'
+import ChatApp from '../assets/p3.png'
 import { ExternalLink, Github } from 'lucide-react';
 
 const Projects = () => {
   const projects = [
     {
       id: 1,
-      title: 'E-Commerce Dashboard',
-      description: 'Modern admin dashboard for e-commerce with analytics, product management, and real-time data visualization.',
-      image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
-      technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Chart.js'],
-      liveDemo: '#',
-      github: '#'
+      title: 'E-Cart',
+      description: '🛒 eCart – A simple app to add products and display them on the site',
+      image: Ecart,
+      technologies: ['React', 'Node.js', 'Express', 'MongoDB'],
+      liveDemo: 'https://e-cart-072y.onrender.com/',
+      github: 'https://github.com/heyharsh50/E-CART'
     },
     {
       id: 2,
-      title: 'Task Management App',
-      description: 'Collaborative task management application with drag-and-drop functionality and team collaboration features.',
+      title: 'HealthCare - A Doctor Appointment System',
+      description: '🩺 A doctor appointment app with booking, payments, document upload, and schedule management for patients, doctors, and admins.',
       image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=600&fit=crop',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Socket.io'],
+      technologies: ['React', 'Node.js', 'MongoDB', 'Razorpay', 'Cloudinary'],
       liveDemo: '#',
-      github: '#'
+      github: 'https://github.com/heyharsh50/Doctor-Appointment'
     },
     {
       id: 3,
-      title: 'Weather Forecast App',
-      description: 'Beautiful weather application with location-based forecasts, interactive maps, and detailed weather analytics.',
-      image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop',
-      technologies: ['React', 'OpenWeather API', 'CSS3', 'Geolocation'],
+      title: 'ChatApp - A Realtime Chat App',
+      description: 'A simple ChatApp with real-time messaging, user authentication, and group chat functionality.',
+      image: ChatApp,
+      technologies: ['React', 'Node', 'Socket.io', 'Express', 'MongoDB'],
       liveDemo: '#',
-      github: '#'
+      github: 'https://github.com/heyharsh50/CHAT-APP'
     },
     {
       id: 4,
       title: 'Portfolio Website',
-      description: 'Responsive portfolio website with dark theme, smooth animations, and modern glassmorphism design.',
-      image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop',
-      technologies: ['React', 'Tailwind CSS', 'Framer Motion', 'Vite'],
-      liveDemo: '#',
-      github: '#'
+      description: 'A portfolio website to showcase my skills and projects.',
+      image: Pfolio,
+      technologies: ['React', 'Vite'],
+      liveDemo: 'https://portfolio-harshs-projects-7a4aa1a4.vercel.app/',
+      github: 'https://github.com/heyharsh50/Portfolio'
     }
   ];
 
