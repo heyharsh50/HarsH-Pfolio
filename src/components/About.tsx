@@ -17,7 +17,7 @@ const About = () => {
     {
       icon: <Database className="w-6 h-6" />,
       title: 'Backend Integration',
-      description: 'Connecting frontends with robust backend services'
+      description: 'Connecting frontend with robust backend services'
     },
     {
       icon: <Globe className="w-6 h-6" />,
